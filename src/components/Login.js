@@ -115,10 +115,6 @@ const styles = StyleSheet.create({
     height: 35,
     width: 275
   },
-  // button: {
-  //   // height: 30,
-  //   // width: '80%'
-  // },
   buttonText: {
     fontSize: 18,
     color: '#FFFFFF'
