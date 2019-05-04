@@ -1,8 +1,10 @@
 import React from 'react'
+import firebase from './config/config'
 import { StyleSheet, Text, View } from 'react-native'
+import AppNavigator from './src/navigator/AppNavigator'
 export default class App extends React.Component {
   render() {
-    <Text>Test</Text>
+    return <AppNavigator />
   }
 }
 
