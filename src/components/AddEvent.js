@@ -8,13 +8,32 @@ import {
   ScrollView
 } from 'react-native'
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars'
+import firebase from '../../config/config'
 
 class AddEvent extends React.Component {
   state = {
     date: '',
     event: '',
-    value: ''
+    value: '',
+    user: firebase.database().ref(firebase.auth().currentUser.uid)
   }
+
+  onAddIncomePress = () => {
+    this.state.user.child('Income').update({
+      [this.state.date]: {
+        [this.state.event]: this.state.value
+      }
+    })
+  }
+
+  onExpensePress = () => {
+    this.state.user.child('Expense').update({
+      [this.state.date]: {
+        [this.state.event]: this.state.value
+      }
+    })
+  }
+
   render() {
     return (
       <ScrollView>
@@ -35,20 +54,26 @@ class AddEvent extends React.Component {
             style={styles.textInput}
             autoCapitalize="none"
             placeholder="Event"
-            // onChangeText={str => this.setState({ email: str })}
+            onChangeText={str => this.setState({ event: str })}
           />
           <TextInput
             style={styles.textInput}
             autoCapitalize="none"
             placeholder="Value"
-            // onChangeText={str => this.setState({ email: str })}
+            onChangeText={str => this.setState({ value: str })}
           />
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.IncomeButton}>
-              <Text style={{ color: 'white', fontSize:18 }}>Add Income</Text>
+            <TouchableOpacity
+              style={styles.IncomeButton}
+              onPress={this.onAddIncomePress}
+            >
+              <Text style={{ color: 'white', fontSize: 18 }}>Add Income</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.ExpenseButton}>
-              <Text style={{ color: 'white', fontSize:18 }}>Add Expense</Text>
+            <TouchableOpacity
+              style={styles.ExpenseButton}
+              onPress={this.onExpensePress}
+            >
+              <Text style={{ color: 'white', fontSize: 18 }}>Add Expense</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -81,7 +106,7 @@ const styles = StyleSheet.create({
   ExpenseButton: {
     width: '30%',
     borderRadius: 5,
-    alignItems: 'center',    
+    alignItems: 'center',
     marginLeft: 10,
     padding: 10,
     backgroundColor: 'rgb(240,128,128)'
