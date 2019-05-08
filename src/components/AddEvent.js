@@ -15,22 +15,36 @@ class AddEvent extends React.Component {
     date: '',
     event: '',
     value: '',
-    user: firebase.database().ref(firebase.auth().currentUser.uid)
+    user: firebase
+      .database()
+      .ref(firebase.auth().currentUser.uid)
+  }
+
+  componentDidMount() {
+    // this.state.user.on('value', function(snapshot) {
+    //   var event = snapshot.val()
+    //   Object.keys(event.Income).map(m => {
+    //     console.log(m);
+        
+    //     console.log(event.Income[m]);
+    //     console.log('-------------------------');
+        
+    //   })
+    // })
+    // console.log(firebase.auth())
   }
 
   onAddIncomePress = () => {
-    this.state.user.child('Income').update({
-      [this.state.date]: {
-        [this.state.event]: this.state.value
-      }
+    var income = this.state.user.child('Income')
+    income.child(this.state.date).update({
+      [this.state.event]: this.state.value
     })
   }
 
   onExpensePress = () => {
-    this.state.user.child('Expense').update({
-      [this.state.date]: {
-        [this.state.event]: this.state.value
-      }
+    var expense = this.state.user.child('Expense')
+    expense.child(this.state.date).update({
+      [this.state.event]: this.state.value
     })
   }
 

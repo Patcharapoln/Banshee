@@ -1,19 +1,32 @@
 import React from 'react'
 import {
   StyleSheet,
-  View,
+  ScrollView,
   TextInput,
   Text,
   Image,
   Keyboard,
-  TouchableWithoutFeedback
+  View
 } from 'react-native'
 import { Button } from 'native-base'
+import Loading from '../components/Loading'
 import firebase from '../../config/config'
 class Login extends React.Component {
   state = {
     email: '1',
-    password: '1'
+    password: '1',
+    user: null,
+    loading: true
+  }
+
+  componentDidMount() {    
+    firebase.auth().onAuthStateChanged(user => {      
+      if (user) {        
+        this.setState({ user })
+        this.setState({ loading: false })
+        this.props.navigation.navigate('Main')
+      }
+    })
   }
 
   onLoginButtonPress = () => {
@@ -42,49 +55,60 @@ class Login extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <>
+        {true ? (
+          <Loading />
+        ) : (
           <View style={styles.container}>
-            <Image
-              style={styles.logo}
-              source={require('../../assets/pig.png')}
-            />
-            <Text style={styles.titleText}>Banshee</Text>
-            <Text style={styles.quoteText}>
-              SAVE MONEY AND MONEY WILL SAVE YOU.
-            </Text>
-            <TextInput
-              style={styles.textInput}
-              autoCapitalize="none"
-              placeholder="Email"
-              onChangeText={str => this.setState({ email: str })}
-            />
-            <TextInput
-              style={styles.textInput}
-              secureTextEntry={true}
-              placeholder="Password"
-              onChangeText={str => this.setState({ password: str })}
-            />
-            <Button
-              block
-              success
-              style={styles.button}
-              onPress={this.onLoginButtonPress}
-            >
-              <Text style={styles.buttonText}> Login </Text>
-            </Button>
-            <Text style={styles.line}>──────── or ────────</Text>
-            <Button block info onPress={this.onSignUpPress}>
-              <Text style={styles.buttonText}> Register </Text>
-            </Button>
+            <ScrollView contentContainerStyle={styles.scroll}>
+              {/* <View style={styles.container}> */}
+              <Image
+                style={styles.logo}
+                source={require('../../assets/pig.png')}
+              />
+              <Text style={styles.titleText}>Banshee</Text>
+              <Text style={styles.quoteText}>
+                SAVE MONEY AND MONEY WILL SAVE YOU.
+              </Text>
+              <TextInput
+                style={styles.textInput}
+                autoCapitalize="none"
+                placeholder="Email"
+                onChangeText={str => this.setState({ email: str })}
+              />
+              <TextInput
+                style={styles.textInput}
+                secureTextEntry={true}
+                placeholder="Password"
+                onChangeText={str => this.setState({ password: str })}
+              />
+              <Button
+                block
+                success
+                style={styles.button}
+                onPress={this.onLoginButtonPress}
+              >
+                <Text style={styles.buttonText}> Login </Text>
+              </Button>
+              <Text style={styles.line}>──────── or ────────</Text>
+              <Button block info onPress={this.onSignUpPress}>
+                <Text style={styles.buttonText}> Register </Text>
+              </Button>
+              {/* </View> */}
+            </ScrollView>
           </View>
-        </TouchableWithoutFeedback>
-      </View>
+        )}
+      </>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  scroll: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -92,7 +116,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   logo: {
-    justifyContent: 'center',
+    alignItems: 'center',
     width: 100,
     height: 100
   },

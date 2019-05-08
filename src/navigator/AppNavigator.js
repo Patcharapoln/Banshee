@@ -5,7 +5,7 @@ import MainTabNavigator from "./MainTabNavigator";
 
 export default createAppContainer(
   createSwitchNavigator({
-    // Login:LoginNavigator,
+    Login:LoginNavigator,
     Main: MainTabNavigator
   })
 );
