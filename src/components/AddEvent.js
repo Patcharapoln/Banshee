@@ -12,39 +12,34 @@ import firebase from '../../config/config'
 
 class AddEvent extends React.Component {
   state = {
-    date: '',
+    day: '',
+    month: '',
     event: '',
     value: '',
-    user: firebase
-      .database()
-      .ref(firebase.auth().currentUser.uid)
-  }
-
-  componentDidMount() {
-    // this.state.user.on('value', function(snapshot) {
-    //   var event = snapshot.val()
-    //   Object.keys(event.Income).map(m => {
-    //     console.log(m);
-        
-    //     console.log(event.Income[m]);
-    //     console.log('-------------------------');
-        
-    //   })
-    // })
-    // console.log(firebase.auth())
+    user: firebase.database().ref(firebase.auth().currentUser.uid)
   }
 
   onAddIncomePress = () => {
-    var income = this.state.user.child('Income')
-    income.child(this.state.date).update({
-      [this.state.event]: this.state.value
+    this.state.user.update({
+      [this.state.event]: {
+        value: this.state.value,
+        date: this.state.day,
+        month: this.state.month,
+        type: 'income',
+        month_type: this.state.month + '_income'
+      }
     })
   }
 
   onExpensePress = () => {
-    var expense = this.state.user.child('Expense')
-    expense.child(this.state.date).update({
-      [this.state.event]: this.state.value
+    this.state.user.update({
+      [this.state.event]: {
+        value: this.state.value,
+        date: this.state.day,
+        month: this.state.month,
+        type: 'expense',
+        month_type: this.state.month + '_expense'
+      }
     })
   }
 
@@ -53,12 +48,12 @@ class AddEvent extends React.Component {
       <ScrollView>
         <View style={styles.container}>
           <Calendar
-            onDayPress={day => {
-              this.setState({ date: day.dateString })
-              console.log(this.state.date)
+            onDayPress={date => {
+              this.setState({ day: date.dateString })
+              this.setState({ month: date.month })
             }}
             markedDates={{
-              [this.state.date]: {
+              [this.state.day]: {
                 selected: true,
                 selectedColor: 'rgb(81,181,249)'
               }
@@ -74,7 +69,7 @@ class AddEvent extends React.Component {
             style={styles.textInput}
             autoCapitalize="none"
             placeholder="Value"
-            onChangeText={str => this.setState({ value: str })}
+            onChangeText={str => this.setState({ value: parseInt(str) })}
           />
           <View style={styles.buttonContainer}>
             <TouchableOpacity

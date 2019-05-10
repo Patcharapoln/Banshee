@@ -2,24 +2,23 @@ import React from 'react'
 import firebase from '../../config/config'
 import { StyleSheet, Text, View } from 'react-native'
 
+var sum = 0
 class Transaction extends React.Component {
+  calculate() {
+    this.props.calculate(sum)
+  }
 
   render() {
-    return this.props.date.map((eventDay, i) => {
-      var event = []
-      event = this.props.event[eventDay]
+    sum = 0
+    return Object.keys(this.props.event).map((eventList, j) => {
+      sum += this.props.event[eventList].value
+      this.calculate()
       return (
-        <View style={{flex: 1, backgroundColor:'white', alignItems:'center'}} key={i}>
-          <Text style={{fontWeight:'bold'}}>{eventDay}</Text>
-          {Object.keys(event).map((eventList, j) => {
-            console.log(eventList)
-            return (
-              <View key={j} style={styles.container}>
-                <Text>{eventList}</Text>
-                <Text>{event[eventList]}</Text>
-              </View>
-            )
-          })}
+        <View key={j} style={styles.container}>
+          <Text style={{ fontSize: 18 }}>{eventList}</Text>
+          <Text style={{ color: this.props.color, fontSize: 18 }}>
+            {this.props.event[eventList].value}
+          </Text>
         </View>
       )
     })
@@ -28,10 +27,16 @@ class Transaction extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width:'80%',
+    width: '100%',
+    marginTop: 10,
     backgroundColor: '#fff',
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  header: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginTop: 10
   }
 })
 

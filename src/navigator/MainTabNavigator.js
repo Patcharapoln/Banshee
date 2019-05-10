@@ -7,6 +7,7 @@ import {
 } from 'react-navigation'
 import Ledger from '../components/Ledger'
 import AddEvent from '../components/AddEvent'
+import EditEvent from '../components/EditEvent'
 import Summary from '../components/Summary'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
@@ -14,15 +15,9 @@ const options = {}
 
 const LedgerStackTab = createStackNavigator(
   {
-    Ledger: Ledger
+    Ledger: Ledger,
+    EditEvent: EditEvent
   },
-  {
-    headerMode: 'none',
-    navigationOptions: {
-      headerVisible: false
-    },
-    options
-  }
 )
 
 LedgerStackTab.navigationOptions = {
