@@ -17,10 +17,38 @@ import ModalSelector from 'react-native-modal-selector'
 var width = Dimensions.get('window').width //full width
 var height = Dimensions.get('window').height
 
+var sumIncome = 0
+var sumExpense = 0
+var balance = 0
+var color = ''
+let index = 1
+const monthList = [
+  { key: index++, label: 'January' },
+  { key: index++, label: 'February' },
+  { key: index++, label: 'March' },
+  { key: index++, label: 'April' },
+  { key: index++, label: 'May' },
+  { key: index++, label: 'June' },
+  { key: index++, label: 'July' },
+  { key: index++, label: 'August' },
+  { key: index++, label: 'September' },
+  { key: index++, label: 'October' },
+  { key: index++, label: 'November' },
+  { key: index++, label: 'December' }
+]
 class Ledger extends React.Component {
   static navigationOptions = ({ navigation }) => ({
+    headerTitle: (
+      <Image
+        style={{ width: 30, height: 30 }}
+        source={require('../../assets/pig.png')}
+      />
+    ),
     headerRight: (
-      <Button title="Edit" onPress={() => navigation.navigate('EditEvent')} />
+      <Button
+        title="Add Event"
+        onPress={() => navigation.navigate('AddEvent')}
+      />
     )
   })
   state = {
@@ -46,6 +74,7 @@ class Ledger extends React.Component {
           this.setState({ incomeEvent: snapshot.val() })
         }.bind(this)
       )
+    //Query expense
     firebase
       .database()
       .ref(firebase.auth().currentUser.uid)
@@ -59,29 +88,20 @@ class Ledger extends React.Component {
       )
   }
 
-  onEditPress = () => {
-    console.log(1)
-    this.props.navigation.navigate('EditEvent')
+  checkBalance(inc, ex) {
+    if (inc - ex > 0) {
+      console.log(color)
+      color = 'rgb(128,221,172)'
+    } else if (inc - ex < 0) {
+      color = 'rgb(240,128,128)'
+    } else {
+      color = 'black'
+    }
   }
 
   render() {
-    var sumIncome = 0
-    var sumExpense = 0
-    let index = 1
-    const monthList = [
-      { key: index++, label: 'January' },
-      { key: index++, label: 'February' },
-      { key: index++, label: 'March' },
-      { key: index++, label: 'April' },
-      { key: index++, label: 'May' },
-      { key: index++, label: 'June' },
-      { key: index++, label: 'July' },
-      { key: index++, label: 'August' },
-      { key: index++, label: 'September' },
-      { key: index++, label: 'October' },
-      { key: index++, label: 'November' },
-      { key: index++, label: 'December' }
-    ]
+    sumIncome = 0
+    sumExpense = 0
     return (
       <View style={styles.container}>
         <Image source={require('../../assets/money.jpg')} style={styles.logo} />
@@ -103,7 +123,8 @@ class Ledger extends React.Component {
               borderColor: '#ccc',
               borderRadius: 5,
               padding: 10,
-              height: 40
+              height: 40,
+              fontSize: 16
             }}
             editable={false}
             placeholder="Please select month"
@@ -125,8 +146,8 @@ class Ledger extends React.Component {
             sumIncome += this.state.incomeEvent[eventList].value
             return (
               <View key={j} style={styles.transaction}>
-                <Text style={{ fontSize: 18 }}>{eventList}</Text>
-                <Text style={{ color: 'rgb(128,221,172)', fontSize: 18 }}>
+                <Text style={{ fontSize: 16 }}>{eventList}</Text>
+                <Text style={{ color: 'rgb(128,221,172)', fontSize: 16 }}>
                   {this.state.incomeEvent[eventList].value}
                 </Text>
               </View>
@@ -138,7 +159,7 @@ class Ledger extends React.Component {
               style={{
                 fontWeight: 'bold',
                 fontSize: 18,
-                marginTop: 10,
+                marginTop: 5,
                 color: 'rgb(128,221,172)'
               }}
             >
@@ -151,25 +172,39 @@ class Ledger extends React.Component {
             sumExpense += this.state.expenseEvent[eventList].value
             return (
               <View key={j} style={styles.transaction}>
-                <Text style={{ fontSize: 18 }}>{eventList}</Text>
-                <Text style={{ color: 'rgb(240,128,128)', fontSize: 18 }}>
+                <Text style={{ fontSize: 16 }}>{eventList}</Text>
+                <Text style={{ color: 'rgb(240,128,128)', fontSize: 16 }}>
                   {this.state.expenseEvent[eventList].value}
                 </Text>
               </View>
             )
           })}
-          <Text style={styles.line}>──────────────────</Text>
           <View style={styles.transaction}>
             <Text style={styles.header}>All expense</Text>
             <Text
               style={{
                 fontWeight: 'bold',
-                fontSize: 18,
-                marginTop: 10,
+                fontSize: 16,
+                marginTop: 5,
                 color: 'rgb(240,128,128)'
               }}
             >
               {sumExpense}
+            </Text>
+          </View>
+          {this.checkBalance(sumIncome, sumExpense)}
+          <Text style={styles.line}>──────────────────</Text>
+          <View style={styles.transaction}>
+            <Text style={styles.header}>Current Balance</Text>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: 16,
+                marginTop: 5,
+                color: color
+              }}
+            >
+              {sumIncome - sumExpense}
             </Text>
           </View>
         </ScrollView>
@@ -189,8 +224,8 @@ const styles = StyleSheet.create({
   },
   header: {
     fontWeight: 'bold',
-    fontSize: 18,
-    marginTop: 10
+    fontSize: 16,
+    marginTop: 5
   },
   container: {
     flex: 1,
@@ -212,7 +247,7 @@ const styles = StyleSheet.create({
   line: {
     color: 'grey',
     fontSize: 18,
-    marginTop: 15
+    marginTop: 10
   }
 })
 

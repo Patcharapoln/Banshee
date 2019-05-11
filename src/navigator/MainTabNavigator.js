@@ -16,7 +16,7 @@ const options = {}
 const LedgerStackTab = createStackNavigator(
   {
     Ledger: Ledger,
-    EditEvent: EditEvent
+    AddEvent: AddEvent
   },
 )
 
@@ -27,20 +27,14 @@ LedgerStackTab.navigationOptions = {
   )
 }
 
-const AddEventStackTab = createStackNavigator(
-  { AddEvent: AddEvent },
-  {
-    headerMode: 'none',
-    navigationOptions: {
-      headerVisible: false
-    }
-  }
+const EditEventStackTab = createStackNavigator(
+  { EditEvent: EditEvent },
 )
 
-AddEventStackTab.navigationOptions = {
-  tabBarLabel: 'Add event',
+EditEventStackTab.navigationOptions = {
+  tabBarLabel: 'Edit event',
   tabBarIcon: ({ tintColor }) => (
-    <Icon name="plus" size={25} color={tintColor} />
+    <Icon name="pencil" size={25} color={tintColor} />
   )
 }
 
@@ -59,7 +53,7 @@ export default createAppContainer(
   createBottomTabNavigator(
     {
       LedgerStackTab,
-      AddEventStackTab,
+      EditEventStackTab,
       SummaryStackTab
     },
     {
